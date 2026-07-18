@@ -1,4 +1,10 @@
-package java.com.sam.enterpriseai.provider;
+package com.sam.enterpriseai.provider;
+
+import com.sam.enterpriseai.dto.AIRequest;
+import com.sam.enterpriseai.dto.AIResponse;
 
 public interface LLMProvider {
+
+    AIResponse execute(AIRequest request);
+
 }

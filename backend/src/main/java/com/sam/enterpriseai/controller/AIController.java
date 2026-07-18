@@ -1,4 +1,4 @@
-package java.com.sam.enterpriseai.controller;
+package com.sam.enterpriseai.controller;
 
 public class AIController {
 }

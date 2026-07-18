@@ -1,4 +1,18 @@
-package java.com.sam.enterpriseai.provider;
+package com.sam.enterpriseai.provider;
 
-public class MockLLMProvider {
+import com.sam.enterpriseai.dto.AIRequest;
+import com.sam.enterpriseai.dto.AIResponse;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MockLLMProvider implements LLMProvider {
+
+    @Override
+    public AIResponse execute(AIRequest request) {
+
+        return new AIResponse(
+                "Mock response for prompt: " + request.prompt()
+        );
+
+    }
 }

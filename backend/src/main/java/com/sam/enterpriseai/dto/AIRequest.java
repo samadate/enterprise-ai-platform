@@ -1,4 +1,6 @@
-package java.com.sam.enterpriseai.dto;
+package com.sam.enterpriseai.dto;
 
-public class AIRequest {
+public record AIRequest(
+        String prompt
+) {
 }
