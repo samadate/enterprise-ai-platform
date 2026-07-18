@@ -5,6 +5,6 @@ import com.sam.enterpriseai.dto.AIResponse;
 
 public interface LLMProvider {
 
-    AIResponse execute(AIRequest request);
+    AIResponse generate(AIRequest request);
 
 }

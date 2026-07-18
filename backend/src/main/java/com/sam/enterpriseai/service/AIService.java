@@ -14,7 +14,7 @@ public class AIService {
         this.llmProvider = llmProvider;
     }
 
-    public AIResponse execute(AIRequest request) {
-        return llmProvider.execute(request);
+    public AIResponse generate(AIRequest request) {
+        return llmProvider.generate(request);
     }
 }

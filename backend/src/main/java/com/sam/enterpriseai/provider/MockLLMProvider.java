@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class MockLLMProvider implements LLMProvider {
 
     @Override
-    public AIResponse execute(AIRequest request) {
+    public AIResponse generate(AIRequest request) {
 
         return new AIResponse(
                 "Mock response for prompt: " + request.prompt()
