@@ -1,5 +1,6 @@
 package com.sam.enterpriseai.service;
 
+import com.sam.enterpriseai.constants.LogMessages;
 import com.sam.enterpriseai.dto.AIRequest;
 import com.sam.enterpriseai.dto.AIResponse;
 import com.sam.enterpriseai.provider.LLMProvider;
@@ -23,7 +24,7 @@ public class AIService {
 
         long start = System.currentTimeMillis();
 
-        log.info("AI generation request received.");
+        log.info(LogMessages.AI_REQUEST_RECEIVED);
 
         try {
 
@@ -31,7 +32,7 @@ public class AIService {
 
             long duration = System.currentTimeMillis() - start;
 
-            log.info("AI generation completed in {} ms.", duration);
+            log.info(LogMessages.AI_REQUEST_COMPLETED, duration);
 
             return response;
 
@@ -39,7 +40,7 @@ public class AIService {
 
             long duration = System.currentTimeMillis() - start;
 
-            log.error("AI generation failed after {} ms.", duration);
+            log.error(LogMessages.AI_REQUEST_FAILED, duration, ex);
 
             throw ex;
         }

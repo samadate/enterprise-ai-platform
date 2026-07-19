@@ -3,6 +3,7 @@ package com.sam.enterpriseai.provider;
 import com.sam.enterpriseai.config.AIProperties;
 import com.sam.enterpriseai.constants.AIProviders;
 import com.sam.enterpriseai.constants.BeanNames;
+import com.sam.enterpriseai.constants.LogMessages;
 import com.sam.enterpriseai.dto.AIRequest;
 import com.sam.enterpriseai.dto.AIResponse;
 import com.sam.enterpriseai.dto.ollama.OllamaGenerateRequest;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import static com.sam.enterpriseai.constants.LogMessages.PROVIDER_EMPTY_RESPONSE;
 
 @Component
 @ConditionalOnProperty(
@@ -48,7 +51,7 @@ public class OllamaLLMProvider implements LLMProvider {
     @Override
     public AIResponse generate(AIRequest request) {
         log.info(
-                "Using provider '{}' with model '{}'.",
+                LogMessages.PROVIDER_SELECTED,
                 AIProviders.OLLAMA,
                 aiProperties.getChat().getModel()
         );
@@ -66,19 +69,24 @@ public class OllamaLLMProvider implements LLMProvider {
                             .body(OllamaGenerateResponse.class);
 
             if (response == null) {
+                log.error(LogMessages.PROVIDER_EMPTY_RESPONSE, AIProviders.OLLAMA);
+
                 throw new AIProviderException(
                         AIProviders.OLLAMA,
                         "Failed to communicate with provider."
                 );
             }
-            log.info("Provider '{}' completed successfully.",
-                    AIProviders.OLLAMA);
+
+            log.info(
+                    LogMessages.PROVIDER_SUCCESS,
+                    AIProviders.OLLAMA
+            );
 
             return mapper.toAIResponse(response);
 
         } catch (Exception ex) {
             log.error(
-                    "Provider '{}' communication failed.",
+                    LogMessages.PROVIDER_FAILURE,
                     AIProviders.OLLAMA,
                     ex
             );
