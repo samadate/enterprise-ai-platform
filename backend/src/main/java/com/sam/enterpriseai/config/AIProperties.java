@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "ai")
 public class AIProperties {
 
+    @NotBlank
     private String provider;
 
     @Valid
@@ -45,6 +46,31 @@ public class AIProperties {
     }
 
     @Valid
+    private Embedding embedding = new Embedding();
+
+    public Embedding getEmbedding() {
+        return embedding;
+    }
+
+    public void setEmbedding(Embedding embedding) {
+        this.embedding = embedding;
+    }
+
+    public static class Embedding {
+
+        @NotBlank
+        private String model;
+
+        public String getModel() {
+            return model;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
+        }
+    }
+
+    @Valid
     private Ollama ollama = new Ollama();
 
     public Ollama getOllama() {
@@ -59,8 +85,6 @@ public class AIProperties {
 
         @NotBlank
         private String baseUrl;
-        @NotBlank
-        private String generateEndpoint;
 
         public String getBaseUrl() {
             return baseUrl;
@@ -68,14 +92,6 @@ public class AIProperties {
 
         public void setBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
-        }
-
-        public String getGenerateEndpoint() {
-            return generateEndpoint;
-        }
-
-        public void setGenerateEndpoint(String generateEndpoint) {
-            this.generateEndpoint = generateEndpoint;
         }
     }
 }

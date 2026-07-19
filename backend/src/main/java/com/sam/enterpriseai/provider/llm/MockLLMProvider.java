@@ -1,8 +1,9 @@
-package com.sam.enterpriseai.provider;
+package com.sam.enterpriseai.provider.llm;
 
 import com.sam.enterpriseai.constants.AIProviders;
 import com.sam.enterpriseai.dto.AIRequest;
 import com.sam.enterpriseai.dto.AIResponse;
+import com.sam.enterpriseai.provider.LLMProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

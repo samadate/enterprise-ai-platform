@@ -1,4 +1,4 @@
-package com.sam.enterpriseai.provider;
+package com.sam.enterpriseai.provider.llm;
 
 import com.sam.enterpriseai.config.AIProperties;
 import com.sam.enterpriseai.constants.AIProviders;
@@ -10,14 +10,13 @@ import com.sam.enterpriseai.dto.ollama.OllamaGenerateRequest;
 import com.sam.enterpriseai.dto.ollama.OllamaGenerateResponse;
 import com.sam.enterpriseai.exception.AIProviderException;
 import com.sam.enterpriseai.mapper.OllamaMapper;
+import com.sam.enterpriseai.provider.LLMProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-
-import static com.sam.enterpriseai.constants.LogMessages.PROVIDER_EMPTY_RESPONSE;
 
 @Component
 @ConditionalOnProperty(
@@ -29,6 +28,8 @@ public class OllamaLLMProvider implements LLMProvider {
 
     private static final Logger log =
             LoggerFactory.getLogger(OllamaLLMProvider.class);
+
+    private static final String GENERATE_ENDPOINT = "/api/generate";
 
     private final RestClient restClient;
     private final AIProperties aiProperties;
@@ -63,7 +64,7 @@ public class OllamaLLMProvider implements LLMProvider {
 
             OllamaGenerateResponse response =
                     restClient.post()
-                            .uri(aiProperties.getOllama().getGenerateEndpoint())
+                            .uri(GENERATE_ENDPOINT)
                             .body(ollamaRequest)
                             .retrieve()
                             .body(OllamaGenerateResponse.class);
