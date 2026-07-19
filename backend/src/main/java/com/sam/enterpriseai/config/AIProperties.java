@@ -1,12 +1,17 @@
 package com.sam.enterpriseai.config;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 @ConfigurationProperties(prefix = "ai")
 public class AIProperties {
 
     private String provider;
 
+    @Valid
     private Chat chat = new Chat();
 
     public String getProvider() {
@@ -27,6 +32,7 @@ public class AIProperties {
 
     public static class Chat {
 
+        @NotBlank
         private String model;
 
         public String getModel() {
@@ -38,6 +44,7 @@ public class AIProperties {
         }
     }
 
+    @Valid
     private Ollama ollama = new Ollama();
 
     public Ollama getOllama() {
@@ -50,7 +57,9 @@ public class AIProperties {
 
     public static class Ollama {
 
+        @NotBlank
         private String baseUrl;
+        @NotBlank
         private String generateEndpoint;
 
         public String getBaseUrl() {
