@@ -1,0 +1,5 @@
+name: enterprise-ai-platform
+
+networks:
+  enterprise-ai-network:
+    driver: bridge
