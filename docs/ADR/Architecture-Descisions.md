@@ -1,0 +1,356 @@
+# Enterprise AI Platform
+
+# Architecture Decision Record (ADR)
+
+This document captures the significant architectural decisions made during the development of the Enterprise AI Platform.
+
+Each decision explains not only **what** was chosen but also **why** it was chosen.
+
+---
+
+## ADR-001 : Build the AI Platform without AI Frameworks
+
+### Status
+
+Accepted
+
+### Decision
+
+The platform will be implemented from scratch without using frameworks such as LangChain4j.
+
+### Reason
+
+The objective of this project is to deeply understand how Enterprise AI systems work internally rather than learning a framework.
+
+Core concepts such as:
+
+- Chat
+- Embeddings
+- Chunking
+- Retrieval
+- Prompt Construction
+- Vector Search
+
+will all be implemented manually.
+
+### Consequence
+
+Pros
+
+- Deep understanding of Enterprise AI architecture.
+- Complete control over implementation.
+- Framework-independent design.
+
+Cons
+
+- More implementation effort.
+
+---
+
+## ADR-002 : Capability-Based Provider Architecture
+
+### Status
+
+Accepted
+
+### Decision
+
+Separate providers for each AI capability.
+
+Instead of:
+
+AIProvider
+
+the platform uses:
+
+- LLMProvider
+- EmbeddingProvider
+
+Future capabilities will introduce additional providers if required.
+
+### Reason
+
+Different AI capabilities evolve independently.
+
+Following the Interface Segregation Principle keeps contracts small and focused.
+
+### Consequence
+
+New providers can be added independently without impacting unrelated capabilities.
+
+---
+
+## ADR-003 : Provider Abstraction
+
+### Status
+
+Accepted
+
+### Decision
+
+Business services depend on provider interfaces rather than provider implementations.
+
+Example
+
+AIService → LLMProvider
+
+instead of
+
+AIService → OllamaLLMProvider
+
+### Reason
+
+Supports multiple providers.
+
+Examples
+
+- Ollama
+- OpenAI
+- Gemini
+- Claude
+
+without changing business logic.
+
+### Consequence
+
+Supports Open/Closed Principle and Dependency Inversion Principle.
+
+---
+
+## ADR-004 : Separate Chat and Embedding Configuration
+
+### Status
+
+Accepted
+
+### Decision
+
+Chat and Embedding are configured independently.
+
+Example
+
+ai.chat.*
+
+ai.embedding.*
+
+instead of
+
+ai.ollama.*
+
+### Reason
+
+Configuration should describe platform capabilities rather than implementation vendors.
+
+This allows future providers without redesigning configuration.
+
+### Consequence
+
+Provider implementation becomes transparent to consumers.
+
+---
+
+## ADR-005 : Treat Knowledge as a First-Class Module
+
+### Status
+
+Accepted
+
+### Decision
+
+Knowledge functionality will exist as its own module.
+
+Example
+
+knowledge/
+
+- chunk
+- ingestion
+- vector
+- retrieval
+
+### Reason
+
+Knowledge management represents a core business capability of the platform rather than a collection of helper services.
+
+### Consequence
+
+The architecture remains modular and easier to evolve.
+
+---
+
+## ADR-006 : DTOs and Domain Models are Different
+
+### Status
+
+Accepted
+
+### Decision
+
+Transport objects remain under dto.
+
+Business concepts remain under their respective domain modules.
+
+Examples
+
+DTO
+
+- AIRequest
+- AIResponse
+
+Domain
+
+- Chunk
+- Document
+- SearchResult
+
+### Reason
+
+Separates API contracts from business concepts.
+
+### Consequence
+
+Improves maintainability and Domain-Driven Design.
+
+---
+
+## ADR-007 : Strategy Pattern for Extensible Components
+
+### Status
+
+Accepted
+
+### Decision
+
+Use interfaces for replaceable algorithms.
+
+Examples
+
+- LLMProvider
+- EmbeddingProvider
+- ChunkingService
+
+### Reason
+
+Allows new implementations without modifying existing consumers.
+
+### Consequence
+
+Supports future extensibility.
+
+---
+
+## ADR-008 : Configuration Ownership by Module
+
+### Status
+
+Proposed
+
+### Decision
+
+Replace the centralized AIProperties with module-specific property classes.
+
+Examples
+
+- ChatProperties
+- EmbeddingProperties
+- ChunkProperties
+
+Each configuration class owns a single configuration namespace.
+
+### Reason
+
+Prevents configuration classes from becoming large and violating the Single Responsibility Principle.
+
+### Consequence
+
+Improves modularity and maintainability as the platform grows.
+
+---
+
+## ADR-009 : RAG Pipeline Built Incrementally
+
+### Status
+
+Accepted
+
+### Decision
+
+Implement the RAG pipeline incrementally.
+
+Order
+
+1. Chunking
+2. Embedding
+3. Vector Storage
+4. Retrieval
+5. Prompt Construction
+6. LLM Response
+
+### Reason
+
+Each stage can be independently tested before integration.
+
+### Consequence
+
+Simplifies debugging and improves architecture clarity.
+
+---
+
+## ADR-010 : Separate Learning Repositories
+
+### Status
+
+Accepted
+
+### Decision
+
+This repository focuses exclusively on Enterprise AI architecture.
+
+Framework-specific implementations (e.g. LangChain4j) will be developed in separate repositories.
+
+### Reason
+
+Keeps this project framework-independent while allowing dedicated learning projects for AI frameworks.
+
+### Consequence
+
+The repository remains a showcase of Enterprise AI engineering rather than framework usage.
+
+## ADR-011 : Documentation and Repository Evolution
+
+### Status
+
+Accepted
+
+### Decision
+
+The repository will evolve incrementally. Documentation files, folders, and project artifacts will only be created when they serve an active purpose.
+
+Empty Markdown files, placeholder folders, and speculative project structures will not be maintained.
+
+### Reason
+
+Documentation should evolve alongside the software rather than being scaffolded upfront.
+
+Following the YAGNI (You Aren't Gonna Need It) principle keeps the repository clean, intentional, and easier to navigate.
+
+Every file and folder should justify its existence by providing immediate value to contributors.
+
+### Consequence
+
+Pros
+
+- Cleaner repository structure.
+- Documentation remains relevant and maintained.
+- Eliminates placeholder files that quickly become outdated.
+- Encourages incremental and purposeful project evolution.
+
+Cons
+
+- New documentation structure may need to be introduced later as the project grows.
+
+### Related Principles
+
+- YAGNI (You Aren't Gonna Need It)
+- Clean Architecture
+- Incremental Design
