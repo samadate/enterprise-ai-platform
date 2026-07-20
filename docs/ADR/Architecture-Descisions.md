@@ -354,3 +354,117 @@ Cons
 - YAGNI (You Aren't Gonna Need It)
 - Clean Architecture
 - Incremental Design
+
+## ADR-012 : Module-Owned Configuration
+
+### Status
+
+Accepted
+
+### Decision
+
+Replace the centralized `AIProperties` configuration class with module-specific configuration classes.
+
+Each functional module owns its own configuration.
+
+Examples
+
+- ChatProperties
+- EmbeddingProperties
+- ChunkProperties
+
+Each class is mapped to its own configuration namespace using `@ConfigurationProperties`.
+
+### Reason
+
+The centralized configuration class would continue to grow as new platform capabilities are introduced.
+
+Splitting configuration by module follows the Single Responsibility Principle and aligns configuration ownership with module ownership.
+
+Each module becomes independently configurable, easier to understand, easier to test, and easier to evolve.
+
+### Consequence
+
+Pros
+
+- Better adherence to the Single Responsibility Principle.
+- Smaller and focused configuration classes.
+- Improved modularity.
+- Easier future maintenance.
+- Clear ownership of configuration.
+
+Cons
+
+- Slightly more configuration classes.
+
+### Related Principles
+
+- Single Responsibility Principle (SRP)
+- Separation of Concerns
+- Modular Architecture
+
+## ADR-012 : Capability-Oriented Configuration Model
+
+### Status
+
+Accepted
+
+### Decision
+
+Replace the centralized `AIProperties` configuration with capability-specific configuration classes.
+
+Each AI capability owns its own configuration.
+
+Examples
+
+- ChatProperties
+- EmbeddingProperties
+
+Each capability is responsible for configuring:
+
+- Provider
+- Base URL
+- Model
+
+Provider-specific implementation details such as REST API endpoints remain inside the provider implementation classes and are not exposed through application configuration.
+
+### Reason
+
+Configuration should describe application capabilities rather than implementation details.
+
+This approach removes coupling between the configuration model and specific AI providers while allowing different providers to be selected independently for each capability.
+
+Examples
+
+- Chat → Ollama
+- Embedding → Ollama
+
+or
+
+- Chat → OpenAI
+- Embedding → VoyageAI
+
+without requiring architectural changes.
+
+Provider-specific API contracts (such as `/api/generate` or `/api/embed`) are implementation details and therefore belong inside provider implementations.
+
+### Consequence
+
+Pros
+
+- Strong adherence to the Single Responsibility Principle.
+- Capability-oriented configuration.
+- Provider-independent configuration model.
+- Supports different providers for different capabilities.
+- Easier future extensibility.
+
+Cons
+
+- Slightly more configuration classes.
+
+### Related Principles
+
+- Single Responsibility Principle
+- Separation of Concerns
+- Open/Closed Principle
+- Capability-Oriented Design

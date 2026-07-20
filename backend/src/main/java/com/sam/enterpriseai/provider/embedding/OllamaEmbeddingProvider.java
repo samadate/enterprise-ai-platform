@@ -1,11 +1,9 @@
 package com.sam.enterpriseai.provider.embedding;
 
-import com.sam.enterpriseai.config.AIProperties;
+import com.sam.enterpriseai.config.EmbeddingProperties;
+import com.sam.enterpriseai.constants.AIProviders;
 import com.sam.enterpriseai.dto.ollama.OllamaEmbeddingRequest;
 import com.sam.enterpriseai.dto.ollama.OllamaEmbeddingResponse;
-import com.sam.enterpriseai.provider.llm.OllamaLLMProvider;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,7 +13,11 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 
 @Component
-@ConditionalOnProperty(name = "ai.provider", havingValue = "ollama")
+@ConditionalOnProperty(
+        prefix = "ai.embedding",
+        name = "provider",
+        havingValue = AIProviders.OLLAMA
+)
 public class OllamaEmbeddingProvider implements EmbeddingProvider {
     private static final Logger log =
             LoggerFactory.getLogger(OllamaEmbeddingProvider.class);
@@ -23,22 +25,22 @@ public class OllamaEmbeddingProvider implements EmbeddingProvider {
     private static final String EMBED_ENDPOINT = "/api/embed";
 
     private final RestClient restClient;
-    private final AIProperties aiProperties;
+    private final EmbeddingProperties embeddingProperties;
 
-    public OllamaEmbeddingProvider(RestClient restClient, AIProperties aiProperties) {
+    public OllamaEmbeddingProvider(RestClient restClient, EmbeddingProperties embeddingProperties) {
         this.restClient = restClient;
-        this.aiProperties = aiProperties;
+        this.embeddingProperties = embeddingProperties;
     }
 
     @Override
     public List<Double> generateEmbedding(String text) {
 
         log.info("Generating embedding using model '{}'.",
-                aiProperties.getEmbedding().getModel());
+                embeddingProperties.getModel());
 
         OllamaEmbeddingRequest request =
                 new OllamaEmbeddingRequest(
-                        aiProperties.getEmbedding().getModel(),
+                        embeddingProperties.getModel(),
                         text
                 );
 

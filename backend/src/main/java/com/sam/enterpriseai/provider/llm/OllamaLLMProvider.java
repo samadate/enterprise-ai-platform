@@ -1,6 +1,6 @@
 package com.sam.enterpriseai.provider.llm;
 
-import com.sam.enterpriseai.config.AIProperties;
+import com.sam.enterpriseai.config.ChatProperties;
 import com.sam.enterpriseai.constants.AIProviders;
 import com.sam.enterpriseai.constants.BeanNames;
 import com.sam.enterpriseai.constants.LogMessages;
@@ -20,7 +20,7 @@ import org.springframework.web.client.RestClient;
 
 @Component
 @ConditionalOnProperty(
-        prefix = "ai",
+        prefix = "ai.chat",
         name = "provider",
         havingValue = AIProviders.OLLAMA
 )
@@ -32,7 +32,7 @@ public class OllamaLLMProvider implements LLMProvider {
     private static final String GENERATE_ENDPOINT = "/api/generate";
 
     private final RestClient restClient;
-    private final AIProperties aiProperties;
+    private final ChatProperties chatProperties;
     private final OllamaMapper mapper;
 
     public OllamaLLMProvider(
@@ -40,12 +40,12 @@ public class OllamaLLMProvider implements LLMProvider {
             @Qualifier(BeanNames.OLLAMA_REST_CLIENT)
             RestClient restClient,
 
-            AIProperties properties,
+            ChatProperties properties,
 
             OllamaMapper mapper) {
 
         this.restClient = restClient;
-        this.aiProperties = properties;
+        this.chatProperties = properties;
         this.mapper = mapper;
     }
 
@@ -54,7 +54,7 @@ public class OllamaLLMProvider implements LLMProvider {
         log.info(
                 LogMessages.PROVIDER_SELECTED,
                 AIProviders.OLLAMA,
-                aiProperties.getChat().getModel()
+                chatProperties.getModel()
         );
 
         OllamaGenerateRequest ollamaRequest =
