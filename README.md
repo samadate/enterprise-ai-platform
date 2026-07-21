@@ -237,6 +237,20 @@ The platform currently supports:
 
 The next major milestone is replacing the in-memory vector store with a production-grade PostgreSQL + pgvector implementation without changing the upper layers of the application.
 
+
+## Database
+
+The platform uses PostgreSQL with the pgvector extension.
+
+Database schema evolution is managed exclusively through Flyway.
+
+Hibernate is configured only for ORM mapping and never manages schema
+creation or updates.
+
+All database changes are introduced through versioned migrations under:
+
+backend/src/main/resources/db/migration
+
 ## Local PostgreSQL
 
 The project starts PostgreSQL automatically using Docker.
@@ -262,6 +276,7 @@ Username: enterprise_ai
 Password: enterprise_ai
 
 ---
+
 
 **Author**
 

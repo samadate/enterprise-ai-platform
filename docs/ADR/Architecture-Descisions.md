@@ -1185,3 +1185,73 @@ capabilities.
 
 Flyway provides a mature migration framework with auditability and
 incremental evolution.
+
+
+# ADR-018 — Database Migration Strategy
+
+## Status
+
+Accepted
+
+## Context
+
+The Enterprise AI Platform requires a repeatable and deterministic
+database initialization process across development, testing, and future
+production environments.
+
+Historically, database schema creation can be delegated to ORM tools
+(e.g. Hibernate) or managed externally.
+
+To maintain full control over schema evolution and ensure reproducible
+deployments, the platform requires an explicit migration strategy.
+
+## Decision
+
+The platform adopts Flyway as the single source of truth for database
+schema evolution.
+
+The following rules apply:
+
+- Every database change must be introduced through a Flyway migration.
+- PostgreSQL extensions (including pgvector) are installed through
+  migrations.
+- Hibernate is not permitted to create or update database schema.
+- Spring Data JPA is responsible only for persistence mapping.
+- Database schema history is maintained exclusively by Flyway.
+- Docker images remain generic and contain no project-specific schema
+  creation logic.
+
+## Consequences
+
+Positive
+
+- Deterministic database initialization.
+- Version-controlled schema evolution.
+- Safe upgrades across environments.
+- Production-compatible deployment model.
+- Clear separation between persistence mapping and schema management.
+
+Negative
+
+- Every schema modification requires creating a new migration.
+- Developers must avoid relying on Hibernate auto-DDL features.
+
+## Alternatives Considered
+
+### Hibernate ddl-auto
+
+Rejected.
+
+Although convenient during development, automatic schema generation is
+not suitable for production systems and introduces uncontrolled schema
+changes.
+
+### SQL initialization scripts only
+
+Rejected.
+
+Plain initialization scripts lack schema versioning and upgrade
+capabilities.
+
+Flyway provides a mature migration framework with auditability and
+incremental evolution.
