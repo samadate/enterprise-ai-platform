@@ -1,0 +1,26 @@
+services:
+
+  cloudbeaver:
+
+    image: dbeaver/cloudbeaver:latest
+
+    container_name: enterprise-ai-cloudbeaver
+
+    restart: unless-stopped
+
+    ports:
+      - "8978:8978"
+
+    volumes:
+      - cloudbeaver-data:/opt/cloudbeaver/workspace
+
+    networks:
+      - enterprise-ai-network
+
+volumes:
+
+  cloudbeaver-data:
+
+networks:
+
+  enterprise-ai-network:

@@ -1,0 +1,31 @@
+services:
+
+  postgres:
+
+    image: pgvector/pgvector:pg16
+
+    container_name: enterprise-ai-postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: enterprise_ai
+      POSTGRES_USER: enterprise_ai
+      POSTGRES_PASSWORD: enterprise_ai
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+    networks:
+      - enterprise-ai-network
+
+volumes:
+
+  postgres-data:
+
+networks:
+
+  enterprise-ai-network:

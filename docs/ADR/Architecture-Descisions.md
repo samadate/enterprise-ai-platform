@@ -712,3 +712,476 @@ This decision establishes a consistent provider architecture for all current and
 Future providers such as PostgreSQL + pgvector, Qdrant, Pinecone, Milvus, Elasticsearch, or Redis Vector Search will follow the same implementation pattern without requiring changes to the Knowledge domain.
 
 This ADR reinforces the project's architectural principle that **domain models should remain independent of infrastructure concerns**.
+
+
+# ADR-015: Educational Foundation Completion and Enterprise Transition
+
+## Status
+
+Accepted
+
+---
+
+## Context
+
+The initial objective of this project was to understand Enterprise AI systems by implementing the core building blocks from first principles instead of relying immediately on mature AI frameworks.
+
+Up to version v0.2.0, the platform successfully demonstrates:
+
+- Provider-based architecture
+- Custom Retrieval-Augmented Generation (RAG)
+- Document chunking
+- Embedding generation
+- In-memory vector storage
+- Knowledge ingestion
+- Similarity search
+- Context augmentation
+- End-to-end RAG pipeline
+
+These implementations were intentionally educational rather than production-oriented.
+
+The remaining educational objective is to understand production vector persistence through PostgreSQL and pgvector.
+
+---
+
+## Decision
+
+The project roadmap is divided into three distinct phases.
+
+### Phase 1 — Educational Foundation (v0.x)
+
+Purpose:
+
+Understand the internal mechanics of Enterprise AI systems by implementing important concepts ourselves where educational value exists.
+
+This phase includes:
+
+- Custom RAG pipeline
+- Provider abstractions
+- InMemory Vector Store
+- PostgreSQL
+- pgvector
+- Docker Compose
+- Spring Data JPA
+- Flyway
+
+Version v0.3.0 will represent the completion of this educational phase.
+
+---
+
+### Phase 2 — Enterprise Transition
+
+After v0.3.0 the project will gradually transition toward enterprise-grade implementations.
+
+Instead of extending custom RAG algorithms indefinitely, mature frameworks will be evaluated and integrated where appropriate.
+
+Examples include:
+
+- LangChain4j
+- Spring AI
+- Production Retrieval
+- AI Memory
+- AI Agents
+- Tool Calling
+
+Custom educational implementations may be replaced when they no longer provide additional educational value.
+
+---
+
+### Phase 3 — Enterprise AI Platform
+
+The long-term objective becomes building production-inspired enterprise AI systems rather than reimplementing solved algorithms.
+
+Future development will focus on:
+
+- Enterprise architecture
+- Scalability
+- Infrastructure
+- Observability
+- Security
+- Cloud-native deployment
+- Multi-provider support
+- Distributed systems
+
+---
+
+## Consequences
+
+### Advantages
+
+- Educational implementations remain preserved through Git history and tagged releases.
+- The project naturally evolves toward enterprise engineering practices.
+- Framework adoption becomes a conscious architectural decision rather than an initial dependency.
+- The repository demonstrates both understanding of AI fundamentals and practical enterprise implementation.
+
+### Trade-offs
+
+- Some educational implementations may eventually become obsolete in the active development branch.
+- Git history and milestone releases become the permanent record of educational implementations instead of maintaining multiple active implementations simultaneously.
+
+---
+
+## Educational Milestone
+
+Version **v0.3.0** is defined as the completion of the educational implementation phase.
+
+Future versions will emphasize enterprise integration and production-grade engineering practices while preserving architectural ownership of the platform.
+
+
+# ADR-016: PostgreSQL and pgvector Persistence Architecture
+
+## Status
+
+Accepted
+
+---
+
+## Context
+
+The educational implementation currently uses an in-memory vector store to understand vector storage, similarity search and Retrieval-Augmented Generation (RAG).
+
+The next educational milestone is to understand production-grade vector persistence using PostgreSQL with the pgvector extension while preserving the provider-based architecture established throughout the platform.
+
+The persistence implementation should remain simple, educational and aligned with enterprise software engineering practices without introducing unnecessary abstraction layers.
+
+---
+
+## Decision
+
+### 1. PostgreSQL
+
+PostgreSQL will be the primary relational database for the platform.
+
+The pgvector extension will be enabled to provide vector similarity capabilities.
+
+Future non-AI application data will also use the same PostgreSQL instance.
+
+---
+
+### 2. Docker Compose
+
+PostgreSQL will run inside Docker Compose.
+
+Reasons:
+
+- Reproducible development environment
+- Version controlled infrastructure
+- Easy onboarding
+- Enterprise development workflow
+- No local PostgreSQL installation required
+
+Persistent Docker volumes will be used so that database data survives container recreation.
+
+---
+
+### 3. Spring Data JPA
+
+Spring Data JPA will be used for persistence.
+
+Reasons:
+
+- Focus remains on pgvector rather than JDBC implementation
+- Enterprise standard
+- Reduced boilerplate
+- Easy future evolution
+
+---
+
+### 4. Provider Ownership
+
+The pgvector implementation belongs entirely to the Vector Store Provider.
+
+Application layers must never interact directly with PostgreSQL entities.
+
+The provider remains responsible for persistence concerns.
+
+---
+
+### 5. Provider Model
+
+A provider-specific persistence model will be introduced.
+
+Example:
+
+PgVectorRecord
+
+This model represents database persistence only.
+
+It must never leak outside the provider package.
+
+---
+
+### 6. Provider Mapper
+
+A provider mapper converts between:
+
+EmbeddedChunk
+
+and
+
+PgVectorRecord
+
+This keeps domain models independent from persistence technologies.
+
+---
+
+### 7. Repository
+
+Spring Data requires a repository interface.
+
+The repository exists solely as a framework requirement.
+
+It is not considered an architectural layer.
+
+It will not be wrapped by additional gateway or repository abstractions.
+
+Only PgVectorStoreProvider will interact with the repository.
+
+---
+
+### 8. Package Structure
+
+provider
+└── vectorstore
+└── pgvector
+├── model
+├── mapper
+├── PgVectorRepository
+└── PgVectorStoreProvider
+
+No additional repository package or gateway layer will be introduced.
+
+---
+
+### 9. Similarity Search
+
+Similarity search will be delegated entirely to PostgreSQL through pgvector operators.
+
+The Java application will not calculate cosine similarity.
+
+Database responsibilities remain inside the database.
+
+---
+
+### 10. Provider Contract
+
+PgVectorStoreProvider must implement the existing VectorStore abstraction.
+
+No application code should require modification when switching between:
+
+- InMemory
+- pgvector
+
+Only configuration should determine the active provider.
+
+---
+
+## Consequences
+
+### Advantages
+
+- Clear provider ownership
+- Simple architecture
+- Minimal abstractions
+- Enterprise-aligned persistence
+- Framework-independent domain model
+- Easy future provider additions
+
+### Trade-offs
+
+- Provider contains persistence knowledge
+- Spring Data repository remains as a framework artifact
+- PostgreSQL-specific features remain isolated inside the provider
+
+---
+
+## Educational Goal
+
+The objective of this implementation is not only to store vectors.
+
+It is to understand how production vector databases integrate into enterprise Java applications while preserving clean architecture boundaries.
+
+
+# ADR-017: Database Schema Ownership and pgvector Initialization
+
+## Status
+
+Accepted
+
+---
+
+## Context
+
+During the initial PostgreSQL and pgvector infrastructure setup, the project attempted
+to enable the `vector` extension using PostgreSQL's initialization mechanism
+(`/docker-entrypoint-initdb.d/init.sql`).
+
+Although this approach works for brand-new database initialization, it introduces
+multiple limitations:
+
+- Initialization scripts execute only once during the first database creation.
+- Existing Docker volumes prevent re-execution of initialization scripts.
+- Database evolution becomes partially managed by Docker and partially by the application.
+- Infrastructure concerns become tightly coupled with database schema evolution.
+
+The project already uses Flyway as the database migration tool, whose responsibility
+is to manage database schema changes in a version-controlled and repeatable manner.
+
+---
+
+## Decision
+
+The project adopts the following responsibility separation:
+
+### Docker
+
+Docker is responsible only for provisioning infrastructure.
+
+For PostgreSQL this means:
+
+- Running PostgreSQL.
+- Providing the pgvector-enabled PostgreSQL image.
+- Persisting database storage.
+- Exposing networking.
+
+Docker **must not** modify application database schema.
+
+---
+
+### Flyway
+
+Flyway becomes the single owner of the application database schema.
+
+This includes:
+
+- Enabling PostgreSQL extensions.
+- Creating schemas.
+- Creating tables.
+- Creating indexes.
+- Managing future database evolution.
+
+The first Flyway migration will enable pgvector using:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+---
+
+## Consequences
+
+### Positive
+
+- Single source of truth for database evolution.
+- Version-controlled schema changes.
+- Repeatable across Local, CI, QA and Production.
+- Eliminates dependency on PostgreSQL initialization scripts.
+- Better separation between infrastructure and application responsibilities.
+- Aligns with enterprise database migration practices.
+
+### Negative
+
+- Application must execute Flyway migrations before pgvector can be used.
+- Docker alone no longer provisions a fully initialized application database.
+
+---
+
+## Alternatives Considered
+
+### Option A
+
+Enable pgvector using Docker initialization scripts.
+
+Rejected because:
+
+- Runs only during first initialization.
+- Difficult to evolve over time.
+- Splits schema ownership between Docker and Flyway.
+
+---
+
+### Option B (Accepted)
+
+Provision PostgreSQL using Docker.
+
+Manage all schema evolution, including pgvector extension creation, through Flyway.
+
+Accepted because it provides a cleaner separation of concerns and follows enterprise
+database migration practices.
+
+---
+
+## Related ADRs
+
+- ADR-014 — Storage Model Isolation
+- ADR-016 — Local Development Infrastructure
+
+
+# ADR-018 — Database Migration Strategy
+
+## Status
+
+Accepted
+
+## Context
+
+The Enterprise AI Platform requires a repeatable and deterministic
+database initialization process across development, testing, and future
+production environments.
+
+Historically, database schema creation can be delegated to ORM tools
+(e.g. Hibernate) or managed externally.
+
+To maintain full control over schema evolution and ensure reproducible
+deployments, the platform requires an explicit migration strategy.
+
+## Decision
+
+The platform adopts Flyway as the single source of truth for database
+schema evolution.
+
+The following rules apply:
+
+- Every database change must be introduced through a Flyway migration.
+- PostgreSQL extensions (including pgvector) are installed through
+  migrations.
+- Hibernate is not permitted to create or update database schema.
+- Spring Data JPA is responsible only for persistence mapping.
+- Database schema history is maintained exclusively by Flyway.
+- Docker images remain generic and contain no project-specific schema
+  creation logic.
+
+## Consequences
+
+Positive
+
+- Deterministic database initialization.
+- Version-controlled schema evolution.
+- Safe upgrades across environments.
+- Production-compatible deployment model.
+- Clear separation between persistence mapping and schema management.
+
+Negative
+
+- Every schema modification requires creating a new migration.
+- Developers must avoid relying on Hibernate auto-DDL features.
+
+## Alternatives Considered
+
+### Hibernate ddl-auto
+
+Rejected.
+
+Although convenient during development, automatic schema generation is
+not suitable for production systems and introduces uncontrolled schema
+changes.
+
+### SQL initialization scripts only
+
+Rejected.
+
+Plain initialization scripts lack schema versioning and upgrade
+capabilities.
+
+Flyway provides a mature migration framework with auditability and
+incremental evolution.

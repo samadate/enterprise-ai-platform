@@ -237,6 +237,30 @@ The platform currently supports:
 
 The next major milestone is replacing the in-memory vector store with a production-grade PostgreSQL + pgvector implementation without changing the upper layers of the application.
 
+## Local PostgreSQL
+
+The project starts PostgreSQL automatically using Docker.
+
+Connection from the host machine:
+
+Host: localhost
+Port: 5432
+Database: enterprise_ai
+Username: enterprise_ai
+Password: enterprise_ai
+
+CloudBeaver:
+
+URL: http://localhost:8978
+
+Connection inside Docker network:
+
+Host: postgres
+Port: 5432
+Database: enterprise_ai
+Username: enterprise_ai
+Password: enterprise_ai
+
 ---
 
 **Author**
