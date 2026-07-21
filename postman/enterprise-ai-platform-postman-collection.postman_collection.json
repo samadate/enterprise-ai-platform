@@ -1,0 +1,325 @@
+{
+  "info": {
+    "_postman_id": "37d66321-a0b5-4433-ba0e-39de1e7de774",
+    "name": "enterprise-ai-platform-postman-collection",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56731289",
+    "_collection_link": "https://go.postman.co/collection/56731289-37d66321-a0b5-4433-ba0e-39de1e7de774?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "application",
+      "item": [
+        {
+          "name": "dev only endpoints",
+          "item": [
+            {
+              "name": "non-application",
+              "item": [
+                {
+                  "name": "Ollama Embedding Test",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Successful POST request\", function () {",
+                          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                          "});",
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"model\": \"all-minilm\",\n    \"input\": \"Kafka is a distributed event streaming platform.\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "http://localhost:11434/api/embed",
+                      "protocol": "http",
+                      "host": [
+                        "localhost"
+                      ],
+                      "port": "11434",
+                      "path": [
+                        "api",
+                        "embed"
+                      ]
+                    },
+                    "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "AI enterprise get vectorstore(temp)",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/plain",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "Spring Boot is easy.\r\nJava is powerful.\r\nKafka is scalable.\r\nOllama is local.",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/dev/ingestion/store",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "dev",
+                    "ingestion",
+                    "store"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "AI enterprise delete vectorstore(temp)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/plain",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "Spring Boot is easy.\r\nJava is powerful.\r\nKafka is scalable.\r\nOllama is local.",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/dev/ingestion/store",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "dev",
+                    "ingestion",
+                    "store"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "AI enterprise Embed(temp)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/plain",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "Kafka is a distributed streaming platform.",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/dev/embedding",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "dev",
+                    "embedding"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI enterprise Ingestion(temp)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"text\": \"Samadhan's favourite food is Panipuri.He loves sweet panipuri and not spicy. if topping is of pudina flavour then he eats more.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/knowledge/ingest",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "knowledge",
+            "ingest"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AI enterprise Generate",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "",
+              "",
+              "// Visualization Script",
+              "",
+              "// Visualization Script",
+              "const template = `",
+              "<style>",
+              "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
+              "  .card {",
+              "    background: #f9f9f9;",
+              "    border: 1px solid #ddd;",
+              "    border-left: 5px solid #FF6C37;",
+              "    border-radius: 6px;",
+              "    padding: 20px 24px;",
+              "    max-width: 800px;",
+              "    margin: 0 auto;",
+              "  }",
+              "  .label {",
+              "    font-size: 11px;",
+              "    font-weight: 700;",
+              "    text-transform: uppercase;",
+              "    letter-spacing: 0.08em;",
+              "    color: #FF6C37;",
+              "    margin-bottom: 10px;",
+              "  }",
+              "  .content {",
+              "    font-size: 15px;",
+              "    line-height: 1.7;",
+              "    color: #333;",
+              "    white-space: pre-wrap;",
+              "  }",
+              "</style>",
+              "<div class=\"card\">",
+              "  <div class=\"label\">AI Response</div>",
+              "  <div class=\"content\">{{responseText}}</div>",
+              "</div>`;",
+              "",
+              "function createPayload() {",
+              "  const body = pm.response.json();",
+              "  return {",
+              "    responseText: body.response || 'No response returned.'",
+              "  };",
+              "}",
+              "",
+              "pm.visualizer.set(template, createPayload());",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"How Samadhan like his fevourite food spicy or sweet?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/ai/generate",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "ai",
+            "generate"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    }
+  ]
+}
