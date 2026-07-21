@@ -468,3 +468,59 @@ Cons
 - Separation of Concerns
 - Open/Closed Principle
 - Capability-Oriented Design
+
+# ADR-013: Use JDK BreakIterator for Initial Document Chunking
+
+**Status:** Accepted
+
+## Context
+
+The Knowledge module requires sentence-aware document chunking as the first stage of the RAG ingestion pipeline. Several approaches were considered, including custom sentence parsing, regular expressions, Java's built-in `BreakIterator`, and external NLP libraries such as OpenNLP and LangChain4J.
+
+The primary goal of this project is to learn and build an enterprise-grade RAG platform rather than implementing NLP algorithms from scratch.
+
+## Decision
+
+The project will use Java's built-in `BreakIterator` for sentence detection.
+
+The chunking implementation will:
+- Detect sentences using `BreakIterator`
+- Group a configurable number of sentences into `Chunk` objects
+- Keep the implementation simple, dependency-free, and easily replaceable
+
+No custom sentence detection logic will be implemented.
+
+## Rationale
+
+- Keeps the project focused on RAG architecture rather than NLP implementation.
+- Avoids reinventing capabilities already provided by the JDK.
+- Introduces no additional dependencies.
+- Provides sufficient sentence detection quality for the initial implementation.
+- Allows future replacement with more advanced chunking strategies without changing the surrounding pipeline.
+
+## Known Limitations
+
+`BreakIterator` is not a complete NLP solution and may incorrectly split sentences containing:
+- Abbreviations (e.g. `Dr.`, `Mr.`, `Inc.`)
+- Acronyms (e.g. `U.S.`, `U.K.`)
+- Certain punctuation edge cases
+
+These limitations are accepted for the current version.
+
+## Consequences
+
+The initial document ingestion pipeline becomes:
+
+```
+Text
+    ↓
+BreakIterator
+    ↓
+Chunking
+    ↓
+Embeddings
+    ↓
+Vector Store
+```
+
+Future implementations may replace `BreakIterator` with OpenNLP, LangChain4J, or semantic chunking techniques without impacting the remainder of the ingestion pipeline, preserving the Open/Closed Principle.

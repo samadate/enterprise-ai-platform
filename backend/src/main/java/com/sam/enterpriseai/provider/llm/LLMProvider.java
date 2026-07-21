@@ -1,4 +1,4 @@
-package com.sam.enterpriseai.provider;
+package com.sam.enterpriseai.provider.llm;
 
 import com.sam.enterpriseai.dto.AIRequest;
 import com.sam.enterpriseai.dto.AIResponse;

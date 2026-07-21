@@ -1,29 +1,29 @@
 package com.sam.enterpriseai.controller.dev;
 
-import com.sam.enterpriseai.provider.embedding.EmbeddingProvider;
-import lombok.RequiredArgsConstructor;
+import com.sam.enterpriseai.knowledge.chunk.Chunk;
+import com.sam.enterpriseai.knowledge.embedding.EmbeddedChunk;
+import com.sam.enterpriseai.knowledge.embedding.EmbeddingService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Temporary controller to test the embedding endpoints.
  * */
 @RestController
-@RequestMapping("/api/v1/dev")
+@RequestMapping("/api/v1/dev/embedding")
 public class EmbeddingDevController {
 
-    private final EmbeddingProvider embeddingProvider;
+    private final EmbeddingService embeddingService;
 
-    public EmbeddingDevController(EmbeddingProvider embeddingProvider) {
-        this.embeddingProvider = embeddingProvider;
+    public EmbeddingDevController(EmbeddingService embeddingService) {
+        this.embeddingService = embeddingService;
     }
 
-    @PostMapping("/embedding")
-    public List<Double> generateEmbedding(@RequestBody String text) {
+    @PostMapping
+    public EmbeddedChunk embed(@RequestBody String text) {
 
-        return embeddingProvider.generateEmbedding(text);
+        Chunk chunk = new Chunk(text);
 
+        return embeddingService.embed(chunk);
     }
 
 }
