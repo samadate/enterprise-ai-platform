@@ -1,6 +1,6 @@
 package com.sam.enterpriseai.mapper;
 
-import com.sam.enterpriseai.config.AIProperties;
+import com.sam.enterpriseai.config.ChatProperties;
 import com.sam.enterpriseai.dto.AIRequest;
 import com.sam.enterpriseai.dto.AIResponse;
 import com.sam.enterpriseai.dto.ollama.OllamaGenerateRequest;
@@ -10,16 +10,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class OllamaMapper {
 
-    private final AIProperties aiProperties;
+    private final ChatProperties chatProperties;
 
-    public OllamaMapper(AIProperties aiProperties) {
-        this.aiProperties = aiProperties;
+    public OllamaMapper(ChatProperties chatProperties) {
+        this.chatProperties = chatProperties;
     }
 
     public OllamaGenerateRequest toGenerateRequest(AIRequest request) {
 
         return new OllamaGenerateRequest(
-                aiProperties.getChat().getModel(),
+                chatProperties.getModel(),
                 request.prompt(),
                 false
         );

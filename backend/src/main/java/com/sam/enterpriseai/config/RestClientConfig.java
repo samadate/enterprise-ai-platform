@@ -18,10 +18,10 @@ public class RestClientConfig {
     @Qualifier(BeanNames.OLLAMA_REST_CLIENT)
     public RestClient ollamaRestClient(
             RestClient.Builder builder,
-            AIProperties properties) {
+            ChatProperties chatProperties) {
 
         return builder
-                .baseUrl(properties.getOllama().getBaseUrl())
+                .baseUrl(chatProperties.getBaseUrl())
                 .build();
     }
 }
