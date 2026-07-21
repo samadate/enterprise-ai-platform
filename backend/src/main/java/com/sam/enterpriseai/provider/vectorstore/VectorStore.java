@@ -12,6 +12,4 @@ public interface VectorStore {
             List<Double> queryEmbedding,
             int topK
     );
-
-    void clear();
 }

@@ -3,10 +3,11 @@ package com.sam.enterpriseai.provider.vectorstore.inmemory;
 import com.sam.enterpriseai.constants.VectorStoreProviders;
 import com.sam.enterpriseai.knowledge.embedding.EmbeddedChunk;
 import com.sam.enterpriseai.provider.vectorstore.VectorStore;
+import com.sam.enterpriseai.provider.vectorstore.inmemory.mapper.InMemoryMapper;
+import com.sam.enterpriseai.provider.vectorstore.inmemory.model.InMemoryVector;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,11 +19,24 @@ import java.util.concurrent.CopyOnWriteArrayList;
 )
 public class InMemoryVectorStore implements VectorStore {
 
-    private final List<EmbeddedChunk> store = new CopyOnWriteArrayList<>();
+    private final List<InMemoryVector> store =
+            new CopyOnWriteArrayList<>();
+
+    private final InMemoryMapper mapper;
+
+    public InMemoryVectorStore(InMemoryMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public void saveAll(List<EmbeddedChunk> embeddedChunks) {
-        store.addAll(embeddedChunks);
+
+        List<InMemoryVector> vectors =
+                embeddedChunks.stream()
+                        .map(mapper::toVector)
+                        .toList();
+
+        store.addAll(vectors);
     }
 
     @Override
@@ -45,15 +59,8 @@ public class InMemoryVectorStore implements VectorStore {
 
                 .limit(topK)
 
+                .map(mapper::toEmbeddedChunk)
+
                 .toList();
-    }
-
-    public List<EmbeddedChunk> getAll() {
-        return Collections.unmodifiableList(store);
-    }
-
-    @Override
-    public void clear() {
-        store.clear();
     }
 }
