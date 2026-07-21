@@ -524,3 +524,191 @@ Vector Store
 ```
 
 Future implementations may replace `BreakIterator` with OpenNLP, LangChain4J, or semantic chunking techniques without impacting the remainder of the ingestion pipeline, preserving the Open/Closed Principle.
+
+# ADR-014: Provider-Owned Vector Store Models and Mapping
+
+- **Status:** Accepted
+- **Date:** 2026-07-21
+- **Decision Makers:** Project Maintainer
+
+---
+
+# Context
+
+The Enterprise AI Platform currently represents generated embeddings using the domain model:
+
+```text
+EmbeddedChunk
+```
+
+This model is produced by the Knowledge domain after document chunking and embedding generation.
+
+Initially, the `InMemoryVectorStore` stored `EmbeddedChunk` objects directly.
+
+As the platform evolves toward production-grade vector databases (PostgreSQL + pgvector, Qdrant, Pinecone, Milvus, etc.), each provider introduces its own persistence requirements, including provider-specific identifiers, metadata, namespaces, indexing strategies, and storage representations.
+
+Allowing provider implementations to persist the domain model directly would tightly couple the Knowledge domain with persistence concerns and make provider implementations inconsistent.
+
+---
+
+# Decision
+
+Every Vector Store provider owns:
+
+- its storage model
+- its mapping implementation
+- its persistence logic
+
+The Knowledge domain remains completely unaware of how providers persist embeddings.
+
+The Knowledge domain continues to expose:
+
+```text
+EmbeddedChunk
+```
+
+Each provider is responsible for translating this domain model into its own persistence representation.
+
+Example:
+
+```text
+Knowledge Domain
+
+EmbeddedChunk
+        │
+        ▼
+
+Provider Mapper
+
+        │
+        ▼
+
+Provider Storage Model
+
+        │
+        ▼
+
+Provider Implementation
+```
+
+Examples:
+
+```text
+EmbeddedChunk
+        │
+        ▼
+InMemoryMapper
+        │
+        ▼
+InMemoryVector
+        │
+        ▼
+InMemoryVectorStore
+```
+
+```text
+EmbeddedChunk
+        │
+        ▼
+PgVectorMapper
+        │
+        ▼
+PgVectorRecord
+        │
+        ▼
+PgVectorStore
+```
+
+```text
+EmbeddedChunk
+        │
+        ▼
+QdrantMapper
+        │
+        ▼
+QdrantPoint
+        │
+        ▼
+QdrantVectorStore
+```
+
+---
+
+# Consequences
+
+## Advantages
+
+- Preserves separation between the Knowledge domain and persistence.
+- Prevents provider-specific concerns from leaking into domain models.
+- Allows each provider to evolve independently.
+- Keeps the `VectorStore` abstraction stable.
+- Makes adding new providers straightforward.
+- Maintains architectural consistency across all vector store implementations.
+- Simplifies provider-specific testing.
+- Follows the Adapter Pattern.
+
+---
+
+## Trade-offs
+
+- Introduces an additional mapping step inside each provider.
+- Adds a small amount of provider-specific code.
+- Requires each provider to maintain its own storage model.
+
+These trade-offs are considered acceptable because they preserve long-term architectural flexibility.
+
+---
+
+# Alternatives Considered
+
+## Option 1 — Persist `EmbeddedChunk` directly
+
+Rejected.
+
+Reasons:
+
+- Couples the Knowledge domain to persistence.
+- Forces domain models to evolve whenever storage requirements change.
+- Makes providers inconsistent.
+
+---
+
+## Option 2 — Shared generic persistence model
+
+Example:
+
+```text
+VectorDocument
+```
+
+Rejected.
+
+Reasons:
+
+- Introduces another abstraction layer without eliminating provider-specific mapping.
+- Still requires provider-specific translation.
+- Becomes a "lowest common denominator" model that belongs to neither the domain nor any provider.
+
+---
+
+## Option 3 — Provider-owned models (Chosen)
+
+Accepted.
+
+Each provider defines:
+
+- storage model
+- mapper
+- persistence implementation
+
+The Knowledge domain remains persistence-agnostic.
+
+---
+
+# Architecture Impact
+
+This decision establishes a consistent provider architecture for all current and future vector store implementations.
+
+Future providers such as PostgreSQL + pgvector, Qdrant, Pinecone, Milvus, Elasticsearch, or Redis Vector Search will follow the same implementation pattern without requiring changes to the Knowledge domain.
+
+This ADR reinforces the project's architectural principle that **domain models should remain independent of infrastructure concerns**.
