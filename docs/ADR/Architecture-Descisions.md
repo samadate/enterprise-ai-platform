@@ -1255,3 +1255,120 @@ capabilities.
 
 Flyway provides a mature migration framework with auditability and
 incremental evolution.
+
+# ADR-019 - Transition from Educational RAG to Enterprise AI Platform
+
+## Status
+
+Accepted
+
+---
+
+## Context
+
+Version **v0.2.0** successfully achieved its educational objective.
+
+The platform now contains a complete Retrieval-Augmented Generation (RAG) implementation built from first principles, including:
+
+- Manual sentence chunking
+- Manual embedding generation
+- Custom InMemoryVectorStore
+- Custom similarity search
+- Provider abstraction
+- Clean architecture
+- Configuration driven execution
+
+These implementations were intentionally written to understand the internal mechanics of modern RAG systems.
+
+The educational objective has now been achieved.
+
+Future development should focus on building an enterprise-ready AI platform rather than maintaining duplicate implementations of production-grade libraries.
+
+---
+
+## Decision
+
+Beginning with **v0.3.0**, the project transitions from an educational RAG implementation to an Enterprise AI Platform.
+
+The project will gradually replace educational implementations with production-grade components wherever appropriate.
+
+The platform will adopt LangChain4j as the canonical implementation for:
+
+- Chunk representation
+- Embedding pipeline
+- Retrieval pipeline
+- Embedding Store contracts
+
+The platform itself will continue to own:
+
+- Configuration
+- Provider selection
+- Spring Boot integration
+- Docker infrastructure
+- Observability
+- Metrics
+- Health
+- Enterprise workflows
+- Lifecycle management
+
+---
+
+## Educational Milestone
+
+Version **v0.2.0** officially concludes the educational implementation of the RAG pipeline.
+
+The custom RAG implementation enters maintenance mode and becomes deprecated.
+
+It remains available only as a historical learning reference.
+
+---
+
+## Enterprise Direction
+
+Future development focuses on:
+
+- LangChain4j integration
+- Production-grade PgVector provider
+- Enterprise metadata
+- Hybrid retrieval
+- Reranking
+- Enterprise observability
+- Multi-provider support
+- Knowledge management
+
+---
+
+## Architectural Principle
+
+The platform owns architecture.
+
+Libraries own algorithms.
+
+The Enterprise AI Platform orchestrates AI components rather than reimplementing them.
+
+---
+
+## Consequences
+
+### Positive
+
+- Reduced maintenance
+- Industry-standard APIs
+- Easier future upgrades
+- Better enterprise alignment
+- Cleaner architecture
+- Faster feature development
+
+### Negative
+
+- Educational RAG classes will gradually be removed
+- Existing custom implementations become deprecated
+- Future development depends on LangChain4j APIs
+
+---
+
+## Future Work
+
+v0.3.0 completes the Enterprise Transition.
+
+Future releases focus on enterprise capabilities instead of educational implementations.
