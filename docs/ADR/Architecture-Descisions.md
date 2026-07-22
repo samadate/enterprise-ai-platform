@@ -1372,3 +1372,71 @@ The Enterprise AI Platform orchestrates AI components rather than reimplementing
 v0.3.0 completes the Enterprise Transition.
 
 Future releases focus on enterprise capabilities instead of educational implementations.
+
+
+# ADR-021 - Adopt LangChain4j as Canonical AI Abstraction
+
+## Status
+
+Accepted
+
+---
+
+## Context
+
+Version 0.2.0 implemented the complete Retrieval-Augmented Generation (RAG) pipeline manually for educational purposes.
+
+Beginning with v0.3.0, the platform transitions toward enterprise-ready implementations.
+
+Rather than maintaining custom implementations of standard AI abstractions, the project adopts LangChain4j as the canonical AI programming model.
+
+---
+
+## Decision
+
+LangChain4j becomes the canonical abstraction for:
+
+- Text Segments
+- Embeddings
+- Embedding Stores
+- Retrieval
+- AI Services
+
+The Enterprise AI Platform continues to own:
+
+- Spring Boot integration
+- Configuration
+- Provider selection
+- Observability
+- Enterprise workflows
+- Infrastructure
+
+---
+
+## Consequences
+
+Positive
+
+- Industry standard APIs
+- Less maintenance
+- Easier upgrades
+- Production-ready abstractions
+
+Negative
+
+- Educational domain objects become deprecated
+- Existing RAG implementation gradually retired
+
+---
+
+## Future
+
+Future providers such as:
+
+- PostgreSQL pgvector
+- InMemory
+- Pinecone
+- Qdrant
+- Elasticsearch
+
+will integrate through LangChain4j contracts whenever possible.
