@@ -1440,3 +1440,126 @@ Future providers such as:
 - Elasticsearch
 
 will integrate through LangChain4j contracts whenever possible.
+
+# ADR-022: Upgrade LangChain4j to Latest Stable Version
+
+- **Status:** Accepted
+- **Date:** 2026-07-23
+
+## Context
+
+The Enterprise AI Platform was initially developed using an older version of LangChain4j while learning Retrieval Augmented Generation (RAG) concepts.
+
+During implementation, several limitations were identified:
+
+- Missing modern RAG abstractions introduced in newer releases.
+- API differences between official documentation and the project implementation.
+- Limited enterprise extension points for RetrievalAugmentor, ContentRetriever and ContentInjector.
+- Compatibility issues with recent examples and documentation.
+- Increased risk of technical debt if future AI capabilities were implemented on outdated APIs.
+
+As the project vision evolved from an educational implementation into an enterprise-grade AI platform, remaining on an older framework version would negatively impact maintainability, extensibility and long-term support.
+
+## Decision
+
+Upgrade LangChain4j to the latest stable version and migrate the project to use the officially supported APIs.
+
+All future AI capabilities will be implemented using the latest LangChain4j abstractions instead of deprecated or legacy APIs.
+
+## Consequences
+
+### Positive
+
+- Access to the latest RAG capabilities.
+- Better alignment with official documentation.
+- Improved enterprise extensibility.
+- Easier framework upgrades.
+- Reduced technical debt.
+- Long-term maintainability.
+
+### Negative
+
+- Required API migration and refactoring.
+- Initial development effort to adapt existing implementations.
+
+## Alternatives Considered
+
+### Continue using the previous LangChain4j version
+
+Rejected because it would increase technical debt and diverge from the actively maintained framework.
+
+### Introduce custom compatibility wrappers
+
+Rejected because it would duplicate framework functionality and complicate future upgrades.
+
+
+# ADR-023: Adopt Enterprise LangChain4j RAG Architecture
+
+- **Status:** Accepted
+- **Date:** 2026-07-23
+
+## Context
+
+The Enterprise AI Platform originally implemented the complete Retrieval Augmented Generation (RAG) pipeline from scratch for educational purposes.
+
+The custom implementation included:
+
+- Manual document ingestion.
+- Manual embedding generation.
+- Manual retrieval pipeline.
+- Manual prompt augmentation.
+- Custom provider abstractions.
+- Custom orchestration of the complete RAG workflow.
+
+While this implementation provided an excellent understanding of RAG internals, it duplicated functionality already provided, tested and maintained by LangChain4j.
+
+As the project evolved into an enterprise-grade AI platform, maintaining a custom RAG orchestration would unnecessarily increase maintenance cost, reduce interoperability with the framework and slow future feature development.
+
+## Decision
+
+Replace the educational custom RAG orchestration with LangChain4j's enterprise RAG architecture.
+
+The platform now relies on official LangChain4j components including:
+
+- AI Services
+- RetrievalAugmentor
+- ContentRetriever
+- ContentInjector
+- EmbeddingStoreIngestor
+- EmbeddingStore
+- Spring Boot Dependency Injection
+- Provider-based architecture using Spring Beans
+
+The platform responsibility is now focused on configuration, provider selection, observability and business capabilities, while LangChain4j is responsible for the RAG orchestration.
+
+## Consequences
+
+### Positive
+
+- Framework-supported enterprise RAG implementation.
+- Cleaner separation of responsibilities.
+- Reduced maintenance effort.
+- Easier integration of future LangChain4j features.
+- Better observability through framework extension points.
+- Simpler provider switching.
+- Improved scalability and maintainability.
+- Better alignment with enterprise software architecture principles.
+
+### Negative
+
+- Educational custom implementation was removed.
+- Required significant migration and validation effort.
+
+## Alternatives Considered
+
+### Continue maintaining the custom RAG implementation
+
+Rejected because it duplicated framework functionality and increased long-term maintenance.
+
+### Combine custom orchestration with LangChain4j orchestration
+
+Rejected because it created overlapping responsibilities and unnecessary architectural complexity.
+
+## Notes
+
+This ADR marks the architectural transition of the Enterprise AI Platform from an educational proof-of-concept into a production-oriented, framework-driven AI platform based on Spring Boot and LangChain4j.

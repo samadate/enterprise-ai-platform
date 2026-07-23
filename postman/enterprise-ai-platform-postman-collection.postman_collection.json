@@ -9,7 +9,7 @@
   },
   "item": [
     {
-      "name": "application",
+      "name": "v0.2.0",
       "item": [
         {
           "name": "dev only endpoints",
@@ -188,138 +188,429 @@
               "response": []
             }
           ]
+        },
+        {
+          "name": "AI enterprise Ingestion(temp)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"text\": \"Samadhan's favourite food is Panipuri.He loves sweet panipuri and not spicy. if topping is of pudina flavour then he eats more.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/knowledge/ingest",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "knowledge",
+                "ingest"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AI enterprise Generate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "",
+                  "// Visualization Script",
+                  "",
+                  "// Visualization Script",
+                  "const template = `",
+                  "<style>",
+                  "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
+                  "  .card {",
+                  "    background: #f9f9f9;",
+                  "    border: 1px solid #ddd;",
+                  "    border-left: 5px solid #FF6C37;",
+                  "    border-radius: 6px;",
+                  "    padding: 20px 24px;",
+                  "    max-width: 800px;",
+                  "    margin: 0 auto;",
+                  "  }",
+                  "  .label {",
+                  "    font-size: 11px;",
+                  "    font-weight: 700;",
+                  "    text-transform: uppercase;",
+                  "    letter-spacing: 0.08em;",
+                  "    color: #FF6C37;",
+                  "    margin-bottom: 10px;",
+                  "  }",
+                  "  .content {",
+                  "    font-size: 15px;",
+                  "    line-height: 1.7;",
+                  "    color: #333;",
+                  "    white-space: pre-wrap;",
+                  "  }",
+                  "</style>",
+                  "<div class=\"card\">",
+                  "  <div class=\"label\">AI Response</div>",
+                  "  <div class=\"content\">{{responseText}}</div>",
+                  "</div>`;",
+                  "",
+                  "function createPayload() {",
+                  "  const body = pm.response.json();",
+                  "  return {",
+                  "    responseText: body.response || 'No response returned.'",
+                  "  };",
+                  "}",
+                  "",
+                  "pm.visualizer.set(template, createPayload());",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"How Samadhan like his fevourite food spicy or sweet?\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/ai/generate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "ai",
+                "generate"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "AI enterprise Ingestion(temp)",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"text\": \"Samadhan's favourite food is Panipuri.He loves sweet panipuri and not spicy. if topping is of pudina flavour then he eats more.\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/v1/knowledge/ingest",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "api",
-            "v1",
-            "knowledge",
-            "ingest"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "AI enterprise Generate",
-      "event": [
+      "name": "v0.3.0",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Successful POST request\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "});",
-              "",
-              "",
-              "// Visualization Script",
-              "",
-              "// Visualization Script",
-              "const template = `",
-              "<style>",
-              "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
-              "  .card {",
-              "    background: #f9f9f9;",
-              "    border: 1px solid #ddd;",
-              "    border-left: 5px solid #FF6C37;",
-              "    border-radius: 6px;",
-              "    padding: 20px 24px;",
-              "    max-width: 800px;",
-              "    margin: 0 auto;",
-              "  }",
-              "  .label {",
-              "    font-size: 11px;",
-              "    font-weight: 700;",
-              "    text-transform: uppercase;",
-              "    letter-spacing: 0.08em;",
-              "    color: #FF6C37;",
-              "    margin-bottom: 10px;",
-              "  }",
-              "  .content {",
-              "    font-size: 15px;",
-              "    line-height: 1.7;",
-              "    color: #333;",
-              "    white-space: pre-wrap;",
-              "  }",
-              "</style>",
-              "<div class=\"card\">",
-              "  <div class=\"label\">AI Response</div>",
-              "  <div class=\"content\">{{responseText}}</div>",
-              "</div>`;",
-              "",
-              "function createPayload() {",
-              "  const body = pm.response.json();",
-              "  return {",
-              "    responseText: body.response || 'No response returned.'",
-              "  };",
-              "}",
-              "",
-              "pm.visualizer.set(template, createPayload());",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"prompt\": \"How Samadhan like his fevourite food spicy or sweet?\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "name": "AI enterprise Chat (LangChain4J)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "",
+                  "// Visualization Script",
+                  "",
+                  "// Visualization Script",
+                  "const template = `",
+                  "<style>",
+                  "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
+                  "  .card {",
+                  "    background: #f9f9f9;",
+                  "    border: 1px solid #ddd;",
+                  "    border-left: 5px solid #FF6C37;",
+                  "    border-radius: 6px;",
+                  "    padding: 20px 24px;",
+                  "    max-width: 800px;",
+                  "    margin: 0 auto;",
+                  "  }",
+                  "  .label {",
+                  "    font-size: 11px;",
+                  "    font-weight: 700;",
+                  "    text-transform: uppercase;",
+                  "    letter-spacing: 0.08em;",
+                  "    color: #FF6C37;",
+                  "    margin-bottom: 10px;",
+                  "  }",
+                  "  .content {",
+                  "    font-size: 15px;",
+                  "    line-height: 1.7;",
+                  "    color: #333;",
+                  "    white-space: pre-wrap;",
+                  "  }",
+                  "</style>",
+                  "<div class=\"card\">",
+                  "  <div class=\"label\">AI Response</div>",
+                  "  <div class=\"content\">{{responseText}}</div>",
+                  "</div>`;",
+                  "",
+                  "function createPayload() {",
+                  "  const body = pm.response.json();",
+                  "  return {",
+                  "    responseText: body.response || 'No response returned.'",
+                  "  };",
+                  "}",
+                  "",
+                  "pm.visualizer.set(template, createPayload());",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/v1/ai/generate",
-          "protocol": "http",
-          "host": [
-            "localhost"
           ],
-          "port": "8080",
-          "path": [
-            "api",
-            "v1",
-            "ai",
-            "generate"
-          ]
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Is Solar Energy Renewable and sustainable?\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/chat",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "chat"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
         },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": []
+        {
+          "name": "AI enterprise Ingest (LangChain4J)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "",
+                  "// Visualization Script",
+                  "",
+                  "// Visualization Script",
+                  "const template = `",
+                  "<style>",
+                  "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
+                  "  .card {",
+                  "    background: #f9f9f9;",
+                  "    border: 1px solid #ddd;",
+                  "    border-left: 5px solid #FF6C37;",
+                  "    border-radius: 6px;",
+                  "    padding: 20px 24px;",
+                  "    max-width: 800px;",
+                  "    margin: 0 auto;",
+                  "  }",
+                  "  .label {",
+                  "    font-size: 11px;",
+                  "    font-weight: 700;",
+                  "    text-transform: uppercase;",
+                  "    letter-spacing: 0.08em;",
+                  "    color: #FF6C37;",
+                  "    margin-bottom: 10px;",
+                  "  }",
+                  "  .content {",
+                  "    font-size: 15px;",
+                  "    line-height: 1.7;",
+                  "    color: #333;",
+                  "    white-space: pre-wrap;",
+                  "  }",
+                  "</style>",
+                  "<div class=\"card\">",
+                  "  <div class=\"label\">AI Response</div>",
+                  "  <div class=\"content\">{{responseText}}</div>",
+                  "</div>`;",
+                  "",
+                  "function createPayload() {",
+                  "  const body = pm.response.json();",
+                  "  return {",
+                  "    responseText: body.response || 'No response returned.'",
+                  "  };",
+                  "}",
+                  "",
+                  "pm.visualizer.set(template, createPayload());",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Samadhan's favourite food is Panipuri.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/ingestion",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "ingestion"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "AI enterprise Ingest Document(LangChain4J)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "",
+                  "// Visualization Script",
+                  "",
+                  "// Visualization Script",
+                  "const template = `",
+                  "<style>",
+                  "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
+                  "  .card {",
+                  "    background: #f9f9f9;",
+                  "    border: 1px solid #ddd;",
+                  "    border-left: 5px solid #FF6C37;",
+                  "    border-radius: 6px;",
+                  "    padding: 20px 24px;",
+                  "    max-width: 800px;",
+                  "    margin: 0 auto;",
+                  "  }",
+                  "  .label {",
+                  "    font-size: 11px;",
+                  "    font-weight: 700;",
+                  "    text-transform: uppercase;",
+                  "    letter-spacing: 0.08em;",
+                  "    color: #FF6C37;",
+                  "    margin-bottom: 10px;",
+                  "  }",
+                  "  .content {",
+                  "    font-size: 15px;",
+                  "    line-height: 1.7;",
+                  "    color: #333;",
+                  "    white-space: pre-wrap;",
+                  "  }",
+                  "</style>",
+                  "<div class=\"card\">",
+                  "  <div class=\"label\">AI Response</div>",
+                  "  <div class=\"content\">{{responseText}}</div>",
+                  "</div>`;",
+                  "",
+                  "function createPayload() {",
+                  "  const body = pm.response.json();",
+                  "  return {",
+                  "    responseText: body.response || 'No response returned.'",
+                  "  };",
+                  "}",
+                  "",
+                  "pm.visualizer.set(template, createPayload());",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "d647bf1d-fe7b-489f-8f6a-d10b09908e52",
+                  "src": "postman-cloud:///1f18683c-034c-4e80-b75c-fc244f9b4e4f"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "fcc5306e-53de-4871-a525-bab56932fcbe",
+                  "src": "/C:/Users/Sam/Documents/knowledge.txt",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/ingestion/document",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "ingestion",
+                "document"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

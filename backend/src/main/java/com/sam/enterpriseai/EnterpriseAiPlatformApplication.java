@@ -1,9 +1,7 @@
 package com.sam.enterpriseai;
 
-import com.sam.enterpriseai.config.ChatProperties;
-import com.sam.enterpriseai.config.ChunkProperties;
-import com.sam.enterpriseai.config.EmbeddingProperties;
-import com.sam.enterpriseai.config.VectorStoreProperties;
+import com.sam.enterpriseai.ai.chat.ChatProperties;
+import com.sam.enterpriseai.ai.vectorstore.PgVectorProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,10 +9,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
 @EnableAutoConfiguration
-@EnableConfigurationProperties({ChatProperties.class,
-        EmbeddingProperties.class,
-        ChunkProperties.class,
-        VectorStoreProperties.class})
+@EnableConfigurationProperties({
+        ChatProperties.class,
+        PgVectorProperties.class
+})
 public class EnterpriseAiPlatformApplication {
 
 	public static void main(String[] args) {

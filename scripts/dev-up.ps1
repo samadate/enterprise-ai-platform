@@ -5,7 +5,7 @@ Write-Host "==============================================="
 Write-Host ""
 
 $llmModel = "qwen2.5:0.5b"
-$embeddingModel = "all-minilm"
+$embeddingModel = "nomic-embed-text"
 
 Write-Host "[1/3] Starting infrastructure..."
 Write-Host ""
@@ -30,6 +30,11 @@ Write-Host "
 ========================================================
 Enterprise AI Platform Development Environment Started
 ========================================================
+
+Models
+-----------
+Chat Model : $llmModel
+Embedding Model : $embeddingModel
 
 AI Services
 -----------
