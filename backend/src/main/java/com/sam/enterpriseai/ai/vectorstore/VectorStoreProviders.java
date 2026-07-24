@@ -47,8 +47,6 @@ public class VectorStoreProviders {
                 .password(pgVectorProperties.getPassword())
                 .table(pgVectorProperties.getTable())
                 .dimension(embeddingProperties.getDimension())
-                .dropTableFirst(pgVectorProperties.isDropTableFirst())
-                .createTable(pgVectorProperties.isCreateTable())
                 .build();
     }
 }

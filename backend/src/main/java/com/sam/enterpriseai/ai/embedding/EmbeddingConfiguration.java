@@ -1,6 +1,7 @@
-package com.sam.enterpriseai.ai.ingestion;
+package com.sam.enterpriseai.ai.embedding;
 
 import dev.langchain4j.data.document.DocumentSplitter;
+import dev.langchain4j.data.document.splitter.DocumentByLineSplitter;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class IngestionConfiguration {
+public class EmbeddingConfiguration {
 
     @Bean
     public EmbeddingStoreIngestor embeddingStoreIngestor(
@@ -23,5 +24,11 @@ public class IngestionConfiguration {
                 .embeddingModel(embeddingModel)
                 .embeddingStore(embeddingStore)
                 .build();
+    }
+
+    @Bean
+    public DocumentSplitter documentSplitter() {
+
+        return new DocumentByLineSplitter(500,50);
     }
 }

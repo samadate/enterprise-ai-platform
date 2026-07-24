@@ -1563,3 +1563,147 @@ Rejected because it created overlapping responsibilities and unnecessary archite
 ## Notes
 
 This ADR marks the architectural transition of the Enterprise AI Platform from an educational proof-of-concept into a production-oriented, framework-driven AI platform based on Spring Boot and LangChain4j.
+
+
+
+# ADR-024: Adopt DocumentTransformer for Enterprise Metadata Enrichment
+
+## Status
+
+Accepted
+
+---
+
+## Context
+
+During the implementation of the enterprise Retrieval-Augmented Generation (RAG) pipeline, the platform introduced PostgreSQL with pgvector as the primary vector database.
+
+The initial design proposed adding a relational `document_id` foreign key to the `knowledge_vectors` table to establish a direct relationship between business documents and stored vector embeddings.
+
+However, investigation of LangChain4j's `PgVectorEmbeddingStore` revealed that the library owns the insertion contract for vector records and only persists the following fields:
+
+- embedding_id
+- embedding
+- text
+- metadata
+
+The current public API does not expose an extension point to populate additional relational columns such as `document_id`.
+
+Several alternative approaches were evaluated:
+
+- Extending PgVectorEmbeddingStore
+- Forking LangChain4j
+- Creating a separate knowledge_vector_mapping table
+- Replacing LangChain4j's EmbeddingStoreIngestor with a custom ingestion pipeline
+
+Each option introduced unnecessary framework coupling, additional maintenance burden, or duplication of functionality already provided by LangChain4j.
+
+---
+
+## Decision
+
+The platform will adopt LangChain4j's `DocumentTransformer` as the official extension point for injecting enterprise business metadata into documents before chunking and embedding generation.
+
+The business relationship between a document and its generated vector records will be represented through enriched metadata instead of additional relational columns inside the vector table.
+
+The `knowledge_vectors` table will therefore remain fully compatible with LangChain4j's persistence contract while still containing sufficient enterprise metadata for document lifecycle operations.
+
+The `knowledge_documents` table remains the single source of truth for business documents.
+
+Chunking remains an internal processing artifact and will not be persisted as an independent business entity.
+
+---
+
+## Enterprise Metadata Contract
+
+Each ingested document will gradually enrich its metadata with enterprise attributes such as:
+
+- documentId
+- documentName
+- documentType
+- source
+- version
+- tenantId
+- chunkIndex
+- ingestedAt
+- embeddingModel
+
+Example:
+
+```json
+{
+  "documentId": "95e7e0b4-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "documentName": "ProjectAtlas.pdf",
+  "documentType": "PDF",
+  "source": "UPLOAD",
+  "version": "1",
+  "chunkIndex": 3,
+  "embeddingModel": "nomic-embed-text"
+}
+```
+
+---
+
+## Consequences
+
+### Positive
+
+- Preserves full compatibility with LangChain4j.
+- Keeps the framework-managed ingestion pipeline intact.
+- Avoids custom persistence implementations.
+- Avoids maintaining a fork of LangChain4j.
+- Supports future migration to other vector databases such as Qdrant, Milvus, Pinecone, or Weaviate.
+- Establishes a standardized enterprise metadata contract.
+- Keeps business ownership separated from AI infrastructure responsibilities.
+
+### Negative
+
+- Document relationships are represented inside metadata rather than relational foreign keys.
+- Deleting vectors belonging to a document requires metadata-based filtering instead of SQL cascade deletion.
+
+---
+
+## Alternatives Considered
+
+### Option 1 — Add document_id column to knowledge_vectors
+
+Rejected.
+
+Although relationally elegant, LangChain4j currently does not support populating arbitrary additional persistence columns through its public API.
+
+---
+
+### Option 2 — Maintain knowledge_vector_mapping table
+
+Rejected.
+
+This required replacing LangChain4j's `EmbeddingStoreIngestor` with a custom ingestion implementation solely to obtain generated embedding identifiers.
+
+This duplicated framework functionality and increased maintenance cost.
+
+---
+
+### Option 3 — Fork or customize PgVectorEmbeddingStore
+
+Rejected.
+
+The additional complexity and long-term upgrade burden outweighed the architectural benefits.
+
+---
+
+## Architectural Principle
+
+Business entities should remain owned by the platform.
+
+AI infrastructure should remain owned by the AI framework.
+
+The platform extends the framework only through officially supported extension points.
+
+DocumentTransformer is therefore considered the canonical extension point for enriching enterprise knowledge before vectorization.
+
+---
+
+## Related ADRs
+
+- ADR-022 — Upgrade LangChain4j to Spring Boot AI Integration
+- ADR-023 — Transition from Educational RAG Pipeline to Enterprise LangChain4j RAG Pipeline

@@ -1,5 +1,6 @@
 package com.sam.enterpriseai.ai.retrieval;
 
+import com.sam.enterpriseai.ai.rag.LoggingContentInjector;
 import com.sam.enterpriseai.ai.rag.LoggingContentRetriever;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -27,6 +28,16 @@ public class RetrievalConfiguration {
                 .minScore(0.8)
                 .build();
         return new LoggingContentRetriever(delegate);
+    }
+
+    @Bean
+    public RetrievalAugmentor retrievalAugmentor(
+            ContentRetriever contentRetriever
+    ) {
+        return DefaultRetrievalAugmentor.builder()
+                .contentRetriever(contentRetriever)
+                .contentInjector(new LoggingContentInjector())
+                .build();
     }
 
 }

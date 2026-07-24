@@ -492,7 +492,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/api/v1/ingestion",
+              "raw": "http://localhost:8080/api/v1/knowledge",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -501,7 +501,7 @@
               "path": [
                 "api",
                 "v1",
-                "ingestion"
+                "knowledge"
               ]
             },
             "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
@@ -509,7 +509,7 @@
           "response": []
         },
         {
-          "name": "AI enterprise Ingest Document(LangChain4J)",
+          "name": "AI enterprise Add Document(LangChain4J)",
           "event": [
             {
               "listen": "test",
@@ -581,6 +581,108 @@
                   "key": "file",
                   "type": "file",
                   "uuid": "d647bf1d-fe7b-489f-8f6a-d10b09908e52",
+                  "src": "postman-cloud:///1f18683c-034c-4e80-b75c-fc244f9b4e4f",
+                  "disabled": true
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "fcc5306e-53de-4871-a525-bab56932fcbe",
+                  "src": "/C:/Users/Sam/Documents/knowledge.txt"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/knowledge/documents",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "knowledge",
+                "documents"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "AI enterprise Get All Documents(LangChain4J)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "",
+                  "// Visualization Script",
+                  "",
+                  "// Visualization Script",
+                  "const template = `",
+                  "<style>",
+                  "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
+                  "  .card {",
+                  "    background: #f9f9f9;",
+                  "    border: 1px solid #ddd;",
+                  "    border-left: 5px solid #FF6C37;",
+                  "    border-radius: 6px;",
+                  "    padding: 20px 24px;",
+                  "    max-width: 800px;",
+                  "    margin: 0 auto;",
+                  "  }",
+                  "  .label {",
+                  "    font-size: 11px;",
+                  "    font-weight: 700;",
+                  "    text-transform: uppercase;",
+                  "    letter-spacing: 0.08em;",
+                  "    color: #FF6C37;",
+                  "    margin-bottom: 10px;",
+                  "  }",
+                  "  .content {",
+                  "    font-size: 15px;",
+                  "    line-height: 1.7;",
+                  "    color: #333;",
+                  "    white-space: pre-wrap;",
+                  "  }",
+                  "</style>",
+                  "<div class=\"card\">",
+                  "  <div class=\"label\">AI Response</div>",
+                  "  <div class=\"content\">{{responseText}}</div>",
+                  "</div>`;",
+                  "",
+                  "function createPayload() {",
+                  "  const body = pm.response.json();",
+                  "  return {",
+                  "    responseText: body.response || 'No response returned.'",
+                  "  };",
+                  "}",
+                  "",
+                  "pm.visualizer.set(template, createPayload());",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "d647bf1d-fe7b-489f-8f6a-d10b09908e52",
                   "src": "postman-cloud:///1f18683c-034c-4e80-b75c-fc244f9b4e4f"
                 },
                 {
@@ -593,7 +695,7 @@
               ]
             },
             "url": {
-              "raw": "http://localhost:8080/api/v1/ingestion/document",
+              "raw": "http://localhost:8080/api/v1/knowledge/documents",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -602,8 +704,111 @@
               "path": [
                 "api",
                 "v1",
-                "ingestion",
-                "document"
+                "knowledge",
+                "documents"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "AI enterprise Get Document By Id(LangChain4J)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Successful POST request\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "",
+                  "// Visualization Script",
+                  "",
+                  "// Visualization Script",
+                  "const template = `",
+                  "<style>",
+                  "  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; }",
+                  "  .card {",
+                  "    background: #f9f9f9;",
+                  "    border: 1px solid #ddd;",
+                  "    border-left: 5px solid #FF6C37;",
+                  "    border-radius: 6px;",
+                  "    padding: 20px 24px;",
+                  "    max-width: 800px;",
+                  "    margin: 0 auto;",
+                  "  }",
+                  "  .label {",
+                  "    font-size: 11px;",
+                  "    font-weight: 700;",
+                  "    text-transform: uppercase;",
+                  "    letter-spacing: 0.08em;",
+                  "    color: #FF6C37;",
+                  "    margin-bottom: 10px;",
+                  "  }",
+                  "  .content {",
+                  "    font-size: 15px;",
+                  "    line-height: 1.7;",
+                  "    color: #333;",
+                  "    white-space: pre-wrap;",
+                  "  }",
+                  "</style>",
+                  "<div class=\"card\">",
+                  "  <div class=\"label\">AI Response</div>",
+                  "  <div class=\"content\">{{responseText}}</div>",
+                  "</div>`;",
+                  "",
+                  "function createPayload() {",
+                  "  const body = pm.response.json();",
+                  "  return {",
+                  "    responseText: body.response || 'No response returned.'",
+                  "  };",
+                  "}",
+                  "",
+                  "pm.visualizer.set(template, createPayload());",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "d647bf1d-fe7b-489f-8f6a-d10b09908e52",
+                  "src": "postman-cloud:///1f18683c-034c-4e80-b75c-fc244f9b4e4f"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "fcc5306e-53de-4871-a525-bab56932fcbe",
+                  "src": "/C:/Users/Sam/Documents/knowledge.txt",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/knowledge/documents/c8574f09-b97a-442e-bddb-abde7d8a8fb3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "knowledge",
+                "documents",
+                "c8574f09-b97a-442e-bddb-abde7d8a8fb3"
               ]
             },
             "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."

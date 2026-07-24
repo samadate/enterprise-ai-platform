@@ -11,8 +11,6 @@ public class PgVectorProperties {
     private String user;
     private String password;
     private String table;
-    private boolean createTable;
-    private boolean dropTableFirst;
 
     // getters & setters
 
@@ -62,21 +60,5 @@ public class PgVectorProperties {
 
     public void setTable(String table) {
         this.table = table;
-    }
-
-    public boolean isCreateTable() {
-        return createTable;
-    }
-
-    public void setCreateTable(boolean createTable) {
-        this.createTable = createTable;
-    }
-
-    public boolean isDropTableFirst() {
-        return dropTableFirst;
-    }
-
-    public void setDropTableFirst(boolean dropTableFirst) {
-        this.dropTableFirst = dropTableFirst;
     }
 }
