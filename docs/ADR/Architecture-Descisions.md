@@ -1707,3 +1707,167 @@ DocumentTransformer is therefore considered the canonical extension point for en
 
 - ADR-022 — Upgrade LangChain4j to Spring Boot AI Integration
 - ADR-023 — Transition from Educational RAG Pipeline to Enterprise LangChain4j RAG Pipeline
+
+
+# ADR-025: KnowledgeDocument as the Primary Business Aggregate
+
+- **Status:** Accepted
+- **Date:** 2026-07-24
+
+---
+
+## Context
+
+The Enterprise AI Platform requires a production-grade architecture for managing business knowledge while leveraging LangChain4j for Retrieval-Augmented Generation (RAG).
+
+Initially, the platform experimented with custom vector storage implementations and later adopted LangChain4j to benefit from its standardized ingestion and retrieval pipeline. During this transition, a clear ownership model for business metadata, vector storage, and database schema management was required.
+
+The platform also needed a strategy that would:
+
+- Keep business metadata independent from AI implementation details.
+- Maintain deterministic database schema evolution.
+- Preserve the flexibility to migrate to another vector database (Qdrant, Milvus, etc.) in the future with minimal business impact.
+
+---
+
+## Decision
+
+### 1. KnowledgeDocument is the Primary Business Aggregate
+
+`KnowledgeDocument` represents the primary business entity of the knowledge platform.
+
+Every uploaded knowledge source is first persisted as a business document before any AI processing begins.
+
+Business operations such as:
+
+- Upload
+- List
+- Retrieve
+- Delete
+- Future Update
+- Future Versioning
+
+operate on `KnowledgeDocument`.
+
+---
+
+### 2. PostgreSQL is the Primary Source of Truth
+
+PostgreSQL serves two responsibilities:
+
+- Business metadata storage (`knowledge_documents`)
+- Vector storage (PgVector)
+
+Business metadata remains the authoritative source of truth for the platform.
+
+---
+
+### 3. Flyway Owns Database Schema Evolution
+
+Database schema ownership belongs entirely to Flyway.
+
+Flyway manages:
+
+- Business tables
+- Vector tables
+- Future indexes
+- Future triggers
+- Future schema evolution
+
+Runtime components are **not responsible** for database schema creation.
+
+---
+
+### 4. LangChain4j Owns Runtime AI Operations
+
+LangChain4j is responsible only for:
+
+- Document parsing
+- Document transformation
+- Chunking
+- Embedding generation
+- Similarity search
+- Vector insertion
+
+LangChain4j is **not** responsible for database schema ownership.
+
+---
+
+### 5. Flyway Schema Aligns with LangChain4j Requirements
+
+The PgVector table managed by Flyway intentionally follows the structure expected by `PgVectorEmbeddingStore`.
+
+This allows:
+
+- Zero runtime table creation.
+- Deterministic infrastructure.
+- Identical schemas across local, staging and production.
+- Infrastructure managed entirely through migrations.
+
+---
+
+### 6. Metadata-Driven Association
+
+Instead of introducing an additional relational mapping table, business identifiers are propagated into LangChain4j metadata.
+
+Current metadata contains:
+
+- `documentId`
+- `documentName`
+- `documentType`
+
+This metadata forms the integration contract between business entities and vector storage.
+
+Example:
+
+```json
+{
+  "documentId": "ffd29746-3ed3-4e55-abed-5f1cdb058a53",
+  "documentName": "knowledge.txt",
+  "documentType": "text/plain"
+}
+```
+
+---
+
+## Consequences
+
+### Advantages
+
+- Clear separation between business domain and AI infrastructure.
+- Business metadata remains independent from LangChain4j internals.
+- Flyway becomes the single owner of database schema evolution.
+- LangChain4j remains responsible only for runtime AI processing.
+- Clean migration path to future vector databases (Qdrant, Milvus, Pinecone, etc.).
+- No duplicate business-to-vector mapping tables.
+- Deterministic infrastructure across environments.
+
+### Trade-offs
+
+- Vector deletion currently requires querying metadata (`documentId`) unless a database trigger is introduced.
+- Business metadata must always be enriched before ingestion to maintain the association contract.
+
+---
+
+## Future Evolution
+
+Future enhancements include:
+
+- PostgreSQL trigger for automatic vector cleanup on document deletion.
+- Knowledge document versioning.
+- Soft delete support.
+- Metadata filtering during retrieval.
+- Multi-tenant document isolation.
+- Migration to external vector databases without changing the business model.
+
+---
+
+## Decision Summary
+
+The Enterprise AI Platform adopts a **business-first architecture** where:
+
+- `KnowledgeDocument` is the primary business aggregate.
+- PostgreSQL is the business source of truth.
+- Flyway owns all schema evolution.
+- LangChain4j performs runtime AI operations only.
+- Business-to-vector association is maintained through enriched document metadata.
